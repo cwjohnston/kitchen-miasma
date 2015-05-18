@@ -82,6 +82,7 @@ module Kitchen
       end
 
       def destroy(state)
+        return unless state[:server_id]
         servers = compute.servers.all.select { |x| x.id == state[:server_id] }
 
         server = servers.first

@@ -45,7 +45,7 @@ module Kitchen
 
       def instance_data
         {
-          :name => 'that',
+          :name => instance.name,
           :flavor_id => config[:flavor_id],
           :image_id => config[:image_id],
           :key_name => config[:key_name]

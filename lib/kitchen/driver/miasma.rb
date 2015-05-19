@@ -49,6 +49,21 @@ module Kitchen
         region && region[instance.platform.name]
       end
 
+      def configure_transport(state)
+        if instance.transport[:username] == instance.transport.class.defaults[:username]
+          image_username = images['usernames'][instance.platform.name]
+          state[:username] = image_username if image_username
+        end
+
+        if config[:key_path]
+          state[:key_path] = config[:key_path]
+        end
+
+        if config[:ssh_port]
+          state[:port] = instance.transport[:port] = config[:port]
+        end
+      end
+
       def provision_server
         begin
           server = compute.servers.build(instance_data)
@@ -69,11 +84,11 @@ module Kitchen
       end
 
       def create(state)
-        state[:username] = config[:username]
         return if state[:server_id]
 
-        server = provision_server
+        configure_transport(state)
 
+        server = provision_server
         state[:server_id] = server.id
 
         Retryable.retryable(

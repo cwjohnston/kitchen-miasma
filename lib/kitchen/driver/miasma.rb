@@ -114,8 +114,8 @@ module Kitchen
 
       def destroy(state)
         return unless state[:server_id]
+        instance.transport.connection(state).close
         servers = compute.servers.all.select { |x| x.id == state[:server_id] }
-
         server = servers.first
         server.destroy
 
@@ -135,6 +135,8 @@ module Kitchen
           end
         end
 
+        state.delete(:server_id)
+        state.delete(:hostname)
       end
 
     end

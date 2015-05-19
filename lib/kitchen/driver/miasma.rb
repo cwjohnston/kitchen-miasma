@@ -9,7 +9,6 @@ module Kitchen
     class Miasma < Kitchen::Driver::SSHBase
 
       default_config(:username, nil)
-      default_config(:image_id, nil)
       default_config(:flavor_id, nil)
       default_config(:sudo, true)
       default_config(:port, 22)

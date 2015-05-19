@@ -1,5 +1,6 @@
-require 'pry'
+require 'json'
 require 'miasma'
+require 'pry'
 require 'retryable'
 
 module Kitchen
@@ -23,6 +24,10 @@ module Kitchen
         }
       end
 
+      default_config(:image_id) do |driver|
+        driver.default_image
+      end
+
       required_config(:image_id)
 
       def compute
@@ -31,6 +36,18 @@ module Kitchen
           :provider => config[:compute_provider][:name],
           :credentials => config[:compute_provider]
         )
+      end
+
+      def images
+        @images ||= begin
+                      json_file = File.join(File.dirname(__FILE__), %w(.. .. .. data), "#{config[:compute_provider][:name]}.json")
+                      JSON.load(IO.read(json_file))
+                    end
+      end
+
+      def default_image
+        region = images['regions'][config[:compute_provider]["#{config[:compute_provider][:name]}_region".to_sym]]
+        region && region[instance.platform.name]
       end
 
       def provision_server

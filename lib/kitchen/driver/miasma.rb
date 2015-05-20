@@ -9,7 +9,8 @@ module Kitchen
     class Miasma < Kitchen::Driver::SSHBase
 
       default_config(:username, nil)
-      default_config(:flavor_id, nil)
+      default_config(:ssh_key_name, nil)
+      default_config(:ssh_key_path, nil)
       default_config(:sudo, true)
       default_config(:port, 22)
       default_config(:retryable_tries, 60)
@@ -27,7 +28,13 @@ module Kitchen
         driver.default_image
       end
 
+      default_config(:flavor_id) do |driver|
+        driver.default_flavor
+      end
+
       required_config(:image_id)
+      required_config(:flavor_id)
+      required_config(:ssh_key_name)
 
       def compute
         @compute ||= ::Miasma.api(
@@ -47,6 +54,10 @@ module Kitchen
       def default_image
         region = images['regions'][config[:compute_provider]["#{config[:compute_provider][:name]}_region".to_sym]]
         region && region[instance.platform.name]
+      end
+
+      def default_flavor
+        images['default_flavor_id']
       end
 
       def configure_transport(state)
@@ -79,7 +90,7 @@ module Kitchen
           :name => instance.name,
           :flavor_id => config[:flavor_id],
           :image_id => config[:image_id],
-          :key_name => config[:key_name]
+          :key_name => config[:ssh_key_name]
         }
       end
 

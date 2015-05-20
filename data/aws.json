@@ -95,5 +95,6 @@
     "ubuntu": "http://uec-images.ubuntu.com/query/",
     "debian": "https://wiki.debian.org/Cloud/AmazonEC2Image",
     "centos": "http://wiki.centos.org/Cloud/AWS"
-  }
+  },
+    "default_flavor_id": "m1.small"
 }

@@ -9,6 +9,8 @@ Gem::Specification.new do |s|
   s.homepage      = ''
   s.add_dependency('miasma', '~> 0.2')
   s.add_dependency('retryable', '~> 2.0')
+  # Include development dependencies for running tests
+  s.add_development_dependency 'pry'
 
   s.summary       = 'Provision Test Kitchen instances using miasma.'
   candidates = Dir.glob("{lib}/**/*") +  ['README.md', 'LICENSE', 'kitchen-miasma.gemspec']

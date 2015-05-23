@@ -3,7 +3,7 @@ require 'kitchen/miasma/version'
 
 Gem::Specification.new do |s|
   s.name          = "kitchen-miasma"
-  s.version       = Kitchen::Miasma::VERSION
+  s.version       = Kitchen::Driver::MIASMA_VERSION
   s.authors       = ["Cameron Johnston"]
   s.email         = ["cameron@rootdown.net"]
   s.homepage      = ''

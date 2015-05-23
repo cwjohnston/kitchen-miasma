@@ -3,10 +3,14 @@ require 'miasma'
 require 'pry'
 require 'retryable'
 
+require 'kitchen'
+require 'kitchen/miasma/version'
+
 module Kitchen
   module Driver
+    class Miasma < SSHBase
 
-    class Miasma < Kitchen::Driver::SSHBase
+      plugin_version Kitchen::Driver::MIASMA_VERSION
 
       default_config(:username, nil)
       default_config(:ssh_key_name, nil)

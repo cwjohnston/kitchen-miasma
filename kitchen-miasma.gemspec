@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.authors       = ["Cameron Johnston"]
   s.email         = ["cameron@rootdown.net"]
   s.homepage      = ''
+  s.add_dependency('test-kitchen', '~> 1.4')
   s.add_dependency('miasma', '~> 0.2')
   s.add_dependency('retryable', '~> 2.0')
   # Include development dependencies for running tests

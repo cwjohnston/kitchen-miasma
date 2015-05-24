@@ -13,8 +13,8 @@ module Kitchen
       plugin_version Kitchen::Driver::MIASMA_VERSION
 
       default_config(:username, nil)
-      default_config(:ssh_key_name, nil)
-      default_config(:ssh_key_path, nil)
+      default_config(:key_name, nil)
+      default_config(:key_path, nil)
       default_config(:sudo, true)
       default_config(:port, 22)
       default_config(:retryable_tries, 60)
@@ -36,7 +36,7 @@ module Kitchen
         driver.default_flavor_id
       end
 
-      required_config(:ssh_key_name)
+      required_config(:key_name)
 
       def compute
         @compute ||= ::Miasma.api(
@@ -98,7 +98,7 @@ module Kitchen
           state[:key_path] = config[:key_path]
         end
 
-        if config[:ssh_port]
+        if config[:port]
           state[:port] = instance.transport[:port] = config[:port]
         end
       end
@@ -118,7 +118,7 @@ module Kitchen
           :name => instance.name,
           :flavor_id => config[:flavor_id],
           :image_id => config[:image_id],
-          :key_name => config[:ssh_key_name]
+          :key_name => config[:key_name]
         }
       end
 

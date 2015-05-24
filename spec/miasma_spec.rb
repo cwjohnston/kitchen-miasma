@@ -11,7 +11,7 @@ require 'kitchen/verifier/dummy'
 describe Kitchen::Driver::Miasma do
   let(:logged_output) { StringIO.new }
   let(:logger)        { Logger.new(logged_output) }
-  let(:config) { { :kitchen_root => '/kroot', :ssh_key_name => 'insight' } }
+  let(:config) { { :kitchen_root => '/kroot', :key_name => 'insight' } }
   let(:platform) { Kitchen::Platform.new(:name => 'hpux') }
   let(:suite) { Kitchen::Suite.new(:name => 'bzflag') }
   let(:verifier) { Kitchen::Verifier::Dummy.new }
@@ -60,22 +60,22 @@ describe Kitchen::Driver::Miasma do
     expect(driver.diagnose_plugin[:version]).to eq(Kitchen::Driver::MIASMA_VERSION)
   end
 
-  context 'without an ssh key path provided' do
+  context 'without a key path provided' do
     before do
-      config[:ssh_key_name] = nil
+      config[:key_name] = nil
     end
 
     it 'raises an exception' do
       expect { driver.verify_dependencies }.to raise_error(
-        Kitchen::UserError, /ssh_key_name/
+        Kitchen::UserError, /key_name/
       )
     end
   end
 
   describe 'configuration' do
 
-    it 'sets :ssh_key_path to nil by default' do
-      expect(driver[:ssh_key_path]).to eq(nil)
+    it 'sets :key_path to nil by default' do
+      expect(driver[:key_path]).to eq(nil)
     end
 
     it 'sets :username to nil by default' do

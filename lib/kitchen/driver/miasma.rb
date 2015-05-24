@@ -29,15 +29,13 @@ module Kitchen
       end
 
       default_config(:image_id) do |driver|
-        driver.default_image
+        driver.default_image_id
       end
 
       default_config(:flavor_id) do |driver|
-        driver.default_flavor
+        driver.default_flavor_id
       end
 
-      required_config(:image_id)
-      required_config(:flavor_id)
       required_config(:ssh_key_name)
 
       def compute
@@ -48,20 +46,46 @@ module Kitchen
         )
       end
 
+      # Returns defaults for known compute providers
+      # @return [Smash]
       def images
         @images ||= begin
-                      json_file = File.join(File.dirname(__FILE__), %w(.. .. .. data), "#{config[:compute_provider][:name]}.json")
-                      JSON.load(IO.read(json_file))
+                      json_file = File.join(
+                        File.dirname(__FILE__), %w(.. .. .. data), "#{config[:compute_provider][:name]}.json"
+                      )
+                      if File.exist?(json_file)
+                        Smash.new(JSON.load(IO.read(json_file)))
+                      else
+                        warn("Failed to load defaults for #{config[:compute_provider][:name]} provider.")
+                        Smash.new
+                      end
                     end
       end
 
-      def default_image
-        region = images['regions'][config[:compute_provider]["#{config[:compute_provider][:name]}_region".to_sym]]
-        region && region[instance.platform.name]
+      # Returns the default image ID for the compute provider's given region.
+      # @returns [String] default image ID
+      def default_image_id
+        region_name = config[:compute_provider]
+        region_map = images.get(:regions, region_name)
+        image_id = region_map && region_map[instance.platform.name]
+
+        if image_id.nil?
+          error("Could not determine default image_id in #{region_name} region for platform #{instance.platform.name}")
+        end
+
+        image_id
       end
 
-      def default_flavor
-        images['default_flavor_id']
+      # Retrieve provider's default flavor id from image map
+      # @return
+      def default_flavor_id
+        flavor_id = images['default_flavor_id']
+
+        if flavor_id.nil?
+          error("Could not determine default flavor_id for platform #{instance.platform.name} via #{config[:compute_provider][:name]}")
+        end
+
+        flavor_id
       end
 
       def configure_transport(state)

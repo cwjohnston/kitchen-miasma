@@ -104,13 +104,11 @@ module Kitchen
       end
 
       def provision_server
-        begin
-          server = compute.servers.build(instance_data)
-          server.save
-          server
-        rescue => e
-          "Error provisioning server: #{e}"
-        end
+        server = compute.servers.build(instance_data)
+        server.save
+        server
+      rescue => e
+        "Error provisioning server: #{e}"
       end
 
       def instance_data
@@ -134,7 +132,7 @@ module Kitchen
           :tries => config[:retryable_tries],
           :sleep => config[:retryable_sleep],
           :on => TimeoutError
-        ) do |retries, exception|
+        ) do |retries, _exception|
 
           c = retries * config[:retryable_sleep]
           t = config[:retryable_tries] * config[:retryable_sleep]
@@ -162,7 +160,7 @@ module Kitchen
           :tries => config[:retryable_tries],
           :sleep => config[:retryable_sleep],
           :on => TimeoutError
-        ) do |retries, exception|
+        ) do |retries, _exception|
 
           c = retries * config[:retryable_sleep]
           t = config[:retryable_tries] * config[:retryable_sleep]

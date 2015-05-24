@@ -20,11 +20,11 @@ describe Kitchen::Driver::Miasma do
   let(:state_file) { double('state_file') }
   let(:state) { Hash.new }
   let(:non_default_compute_provider) do
-     {
-        :name => 'open-stack',
-        :open_stack_username => 'alice',
-        :open_stack_password => 'secret'
-     }
+    {
+      :name => 'open-stack',
+      :open_stack_username => 'alice',
+      :open_stack_password => 'secret'
+    }
   end
   let(:env) do
     {
@@ -54,7 +54,7 @@ describe Kitchen::Driver::Miasma do
     )
   end
 
-  before { stub_const("ENV", env) }
+  before { stub_const('ENV', env) }
 
   it 'plugin_version is set to Kitchen::Driver::MIASMA_VERSION' do
     expect(driver.diagnose_plugin[:version]).to eq(Kitchen::Driver::MIASMA_VERSION)
@@ -115,4 +115,3 @@ describe Kitchen::Driver::Miasma do
   end
 
 end
-

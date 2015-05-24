@@ -1,0 +1,14 @@
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%':  '()'
+    '%q': '()'
+    '%Q': '()'
+    '%w': '()'
+    '%W': '()'
+    '%x': '()'
+Metrics/MethodLength:
+  Max: 30
+Metrics/AbcSize:
+  Max: 40

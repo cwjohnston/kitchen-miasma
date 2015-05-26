@@ -47,17 +47,17 @@ module Kitchen
       end
 
       # Returns defaults for known compute providers
-      # @return [Smash]
+      # @return [Hash]
       def images
         @images ||= begin
                       json_file = File.join(
                         File.dirname(__FILE__), %w(.. .. .. data), "#{config[:compute_provider][:name]}.json"
                       )
                       if File.exist?(json_file)
-                        Smash.new(JSON.load(IO.read(json_file)))
+                        Hash.new(JSON.load(IO.read(json_file)))
                       else
                         warn("Failed to load defaults for #{config[:compute_provider][:name]} provider.")
-                        Smash.new
+                        Hash.new
                       end
                     end
       end

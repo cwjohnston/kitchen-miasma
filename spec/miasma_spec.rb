@@ -11,21 +11,24 @@ require 'kitchen/verifier/dummy'
 describe Kitchen::Driver::Miasma do
   let(:logged_output) { StringIO.new }
   let(:logger)        { Logger.new(logged_output) }
-  let(:config) { { :kitchen_root => '/kroot', :key_name => 'insight' } }
-  let(:platform) { Kitchen::Platform.new(:name => 'hpux') }
-  let(:suite) { Kitchen::Suite.new(:name => 'bzflag') }
+  let(:config) { { :kitchen_root => '/kroot', :key_name => 'provider_key' } }
+  let(:platform) { Kitchen::Platform.new(:name => 'ubuntu-14.04') }
+  let(:suite) { Kitchen::Suite.new(:name => 'default') }
   let(:verifier) { Kitchen::Verifier::Dummy.new }
   let(:provisioner) { Kitchen::Provisioner::Dummy.new }
   let(:transport) { Kitchen::Transport::Dummy.new }
   let(:state_file) { double('state_file') }
   let(:state) { Hash.new }
+
   let(:non_default_compute_provider) do
     {
-      :name => 'open-stack',
+      :name => 'open_stack',
       :open_stack_username => 'alice',
-      :open_stack_password => 'secret'
+      :open_stack_password => 'secret',
+      :open_stack_region => 'us-west-2'
     }
   end
+
   let(:env) do
     {
       'AWS_DEFAULT_REGION' => 'us-west-2',
@@ -33,6 +36,35 @@ describe Kitchen::Driver::Miasma do
       'AWS_SECRET_ACCESS_KEY' => 'INVALID_KEY'
     }
   end
+
+  let(:default_data_fixture) do
+    {
+      'default_flavor_id' => 'm3.medium',
+      'usernames' => {
+        'ubuntu-14.04' => 'ubuntu'
+      },
+      'regions' => {
+        'us-west-2' => {
+          'ubuntu-14.04' => 'ami-159cad25'
+        }
+      }
+    }
+  end
+
+  let(:non_default_data_fixture) do
+    {
+      'default_flavor_id' => 'm1.small',
+      'usernames' => {
+        'ubuntu-14.04' => 'openstack'
+      },
+      'regions' => {
+        'us-west-2' => {
+          'ubuntu-14.04' => 'ubuntu-image'
+        }
+      }
+    }
+  end
+
   let(:driver_object) { Kitchen::Driver::Miasma.new(config) }
 
   let(:driver) do
@@ -54,7 +86,7 @@ describe Kitchen::Driver::Miasma do
     )
   end
 
-  before { stub_const('ENV', env) }
+  before { stub_const("ENV", env) }
 
   it 'plugin_version is set to Kitchen::Driver::MIASMA_VERSION' do
     expect(driver.diagnose_plugin[:version]).to eq(Kitchen::Driver::MIASMA_VERSION)
@@ -103,11 +135,33 @@ describe Kitchen::Driver::Miasma do
       )
     end
 
+    context 'when the default :compute_provider is used' do
+      before do
+        allow_any_instance_of(Kitchen::Driver::Miasma).to receive(:images).and_return(default_data_fixture)
+      end
+
+      it 'returns the expected image id' do
+        expect(driver[:image_id]).to eq('ami-159cad25')
+      end
+    end
+
     context 'when :comptue_provider is assigned a non-default value' do
 
-      it 'overrides the default compute_provider' do
+      before do
         config[:compute_provider] = non_default_compute_provider
+        allow_any_instance_of(Kitchen::Driver::Miasma).to receive(:images).and_return(non_default_data_fixture)
+      end
+
+      it 'overrides the default compute_provider' do
         expect(driver[:compute_provider]).to eq(non_default_compute_provider)
+      end
+
+      it 'returns the expected default flavor id' do
+        expect(driver[:flavor_id]).to eq('m1.small')
+      end
+
+      it 'returns the expected default image id' do
+        expect(driver[:image_id]).to eq('ubuntu-image')
       end
 
     end
@@ -115,3 +169,4 @@ describe Kitchen::Driver::Miasma do
   end
 
 end
+

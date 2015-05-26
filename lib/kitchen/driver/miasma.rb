@@ -65,8 +65,8 @@ module Kitchen
       # Returns the default image ID for the compute provider's given region.
       # @returns [String] default image ID
       def default_image_id
-        region_name = config[:compute_provider]
-        region_map = images.get(:regions, region_name)
+        region_name = config[:compute_provider]["#{config[:compute_provider][:name]}_region".to_sym]
+        region_map = images.fetch('regions', {}).fetch(region_name, {})
         image_id = region_map && region_map[instance.platform.name]
 
         if image_id.nil?
@@ -95,11 +95,11 @@ module Kitchen
         end
 
         if config[:key_path]
-          state[:key_path] = config[:key_path]
+          state[:ssh_key] = config[:key_path]
         end
 
         if config[:port]
-          state[:port] = instance.transport[:port] = config[:port]
+          state[:port] = config[:port]
         end
       end
 

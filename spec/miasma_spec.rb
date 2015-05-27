@@ -38,7 +38,7 @@ describe Kitchen::Driver::Miasma do
   end
 
   let(:default_data_fixture) do
-    {
+    Smash.new(
       'default_flavor_id' => 'm3.medium',
       'usernames' => {
         'ubuntu-14.04' => 'ubuntu'
@@ -48,11 +48,11 @@ describe Kitchen::Driver::Miasma do
           'ubuntu-14.04' => 'ami-159cad25'
         }
       }
-    }
+    )
   end
 
   let(:non_default_data_fixture) do
-    {
+    Smash.new(
       'default_flavor_id' => 'm1.small',
       'usernames' => {
         'ubuntu-14.04' => 'openstack'
@@ -62,7 +62,7 @@ describe Kitchen::Driver::Miasma do
           'ubuntu-14.04' => 'ubuntu-image'
         }
       }
-    }
+    )
   end
 
   let(:driver_object) { Kitchen::Driver::Miasma.new(config) }

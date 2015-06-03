@@ -1,5 +1,6 @@
 {
     "commands": [
+        "sudo apt-get install -yq build-essential",
         "gem install bundle",
         "bundle install",
         "bundle exec rake spec"

@@ -1,0 +1,8 @@
+{
+    "commands": [
+        "gem install bundle",
+        "bundle install",
+        "bundle exec rake spec"
+    ],
+    "environment": {}
+}

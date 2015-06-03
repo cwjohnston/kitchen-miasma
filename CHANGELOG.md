@@ -1,4 +1,4 @@
 # kitchen-miasma changelog
 
-## Unreleased
+## 0.0.1
 - Initial implementation

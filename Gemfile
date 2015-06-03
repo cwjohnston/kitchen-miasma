@@ -6,4 +6,5 @@ group :development do
   gem 'finstyle'
   gem 'guard-rspec',    :require => nil
   gem 'guard-rubocop',  :require => nil
+  gem 'rake'
 end
